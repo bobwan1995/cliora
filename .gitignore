@@ -1,0 +1,5 @@
+.DS_Store
+.idea
+./outputs
+./flickr_data
+./coco_data

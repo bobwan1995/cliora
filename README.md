@@ -2,7 +2,7 @@
 
 This is the official codebase for ICLR **oral** paper Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling. We introduce a new task of Unsupervised Vision-Language Grammar Induction and devise a model Contrastive Language-Image inside-Outside Recursive Autoencoder (CLIORA) to solve it. Please read our paper for more details: https://openreview.net/forum?id=N0n_QyQ5lBF.
 
-This code follows the implementation architecture of [DIORA](https://github.com/iesl/diora)
+This code follows the implementation architecture of [DIORA](https://github.com/iesl/diora).
 
 ## Quick Start
 
@@ -15,77 +15,40 @@ pip install -r requirements.txt
 ```
 
 
-Download the dataset.
+Download the [datasets]() and the [checkpoints](https://esatkuleuvenbe-my.sharepoint.com/:u:/g/personal/bwan_esat_kuleuven_be/EYCdZiPIcj5OtQQqIH49B4gBcfT607sKdnGxrsdkYPKapQ?e=1aGlyk).
+
+
+
+Make sure to put the files as the following structure:
 
 ```
-mkdir -p ~/Downloads
-cd ~/Downloads
-wget http://diora-naacl-2019.s3.amazonaws.com/diora-checkpoints.zip
-unzip diora-checkpoints.zip
+  cliora
+  ├───cliora
+  │   ├─...
+  │
+  ├───flickr_data
+  │   ├─flickr_feat_maf
+  │
+  ├───outputs
+      ├─flickr
 ```
 
-
-Running DIORA.
-
+Running CLIORA.
 ```
-# Clone Repo
-cd ~/code && git clone git@github.com:iesl/diora.git
-
-# Run Example
-source activate diora
-cd ~/code/diora/pytorch
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
-## Create a directory to cache elmo embeddings.
-mkdir -p ~/data/elmo
 
-## Parse some text.
-python diora/scripts/parse.py \
-    --batch_size 10 \
-    --data_type txt_id \
-    --elmo_cache_dir ~/data/elmo \
-    --load_model_path ~/Downloads/softmax-mlp-shared/model.pt \
-    --model_flags ~/Downloads/softmax-mlp-shared/flags.json \
-    --validation_path ./sample.txt \
-    --validation_filter_length 10
+## Train DIORA
+sh train_diora.sh
 
-## Extract vectors using latent trees,
-python diora/scripts/phrase_embed_simple.py --parse_mode latent \
-    --batch_size 10 \
-    --data_type txt_id \
-    --elmo_cache_dir ~/data/elmo \
-    --load_model_path ~/Downloads/softmax-mlp-shared/model.pt \
-    --model_flags ~/Downloads/softmax-mlp-shared/flags.json \
-    --validation_path ./sample.txt \
-    --validation_filter_length 10
+## Test DIORA
+sh test_diora.sh
 
-## or specify the trees to use.
-python diora/scripts/phrase_embed_simple.py --parse_mode given \
-    --batch_size 10 \
-    --data_type jsonl \
-    --elmo_cache_dir ~/data/elmo \
-    --load_model_path ~/Downloads/softmax-mlp-shared/model.pt \
-    --model_flags ~/Downloads/softmax-mlp-shared/flags.json \
-    --validation_path ./sample.jsonl \
-    --validation_filter_length 10
+## Train CLOIRA based on DIORA
+sh train_clora.sh
 
-## Train from scratch.
-python -m torch.distributed.launch --nproc_per_node=4 diora/scripts/train.py \
-    --arch mlp-shared \
-    --batch_size 32 \
-    --data_type nli \
-    --elmo_cache_dir ~/data/elmo \
-    --emb elmo \
-    --hidden_dim 400 \
-    --k_neg 100 \
-    --log_every_batch 100 \
-    --lr 2e-3 \
-    --normalize unit \
-    --reconstruct_mode softmax \
-    --save_after 1000 \
-    --train_filter_length 20 \
-    --train_path ~/data/allnli.jsonl \
-    --cuda --multigpu
+## Test CLIORA 
+sh test_cliora.sh
 ```
 
 ## Multi-GPU Training
@@ -93,125 +56,30 @@ python -m torch.distributed.launch --nproc_per_node=4 diora/scripts/train.py \
 Using `DistributedDataParallel`:
 
 ```
-export CUDA_VISIBLE_DEVICES=0,1
-export NGPUS=2
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+export NGPUS=4
 python -m torch.distributed.launch --nproc_per_node=$NGPUS diora/scripts/train.py \
     --cuda \
     --multigpu \
     ... # other args
 ```
 
-## Useful Command Line Arguments
 
-*Data*
+## Word Embedding
 
-`--data_type` Specifies the format of the data. Choices = `nli`, `txt`, `txt_id`, `synthetic`. Can specify different types for trainining and validation using `--train_data_type` and `--validation_data_type`. The `synthetic` type does not require any input file.
-
-For examples of the expected format, please refer to the following files:
-
-- `nli` The standard JSONL format used by SNLI and MultiNLI. Although examples are sentence pairs, the model only uses one sentence at a time.
-- `txt` A single space-delimited sentence per line.
-- `txt_id` Same as `txt` except the first token is an example id.
-
-`--train_path` and `validation_path` Specifies the path to the input data for training and validation.
-
-`--train_filter_length` Only examples less than this value will used for training. To consider all examples, set this to 0. Similarly, can use `--validation_filter_length` for validation.
-
-`--batch_size` Specifies the batch size. The batch size specifically for validation can be set using `--validation_batch_size`, otherwise it will default to `--batch_size`.
-
-`--embeddings_path` The path to GloVe-style word embeddings.
-
-`--emb` Set to `w2v` for GloVe, `elmo` for ELMo, and `both` for a concatenation of the two.
-
-`--elmo_options_path` and `--elmo_weights_path` The paths to the options and weights for ELMo.
-
-*Optimization and Model Configuration*
-
-`--lr` The learning rate.
-
-`--hidden_dim` The dimension associated with the TreeLSTM.
-
-`--margin` The margin value used in the objective for reconstruction.
-
-`--k_neg` The number of negative examples to sample.
-
-`--freq_dist_power` The negative examples are chosen according to their frequency within the training corpus. Lower values of `--freq_dist_power` make this distribution more peaked.
-
-`--normalize` When set to `unit`, the values of each cell will have their norm set to 1. Choices = `none`, `unit`.
-
-`--reconstruct_mode` Specifies how to reconstruct the correct word. Choices = `margin`.
-
-*Logging*
-
-`--load_model_path` For evaluation, parsing, and fine-tuning you can use this parameter to specify a previous checkpoint to initialize your model.
-
-`--experiment_path` Specifies a directory where log files and checkpoints will be saved.
-
-`--log_every_batch` Every N gradient updates a summary will be printed to the log.
-
-`--save_latest` Every N gradient updates, a checkpoint will be saved called `model_periodic.pt`.
-
-`--save_distinct` Every N gradient updates, a checkpoint will be saved called `model.step_${N}.pt`.
-
-`--save_after` Checkpoints will only be saved after N gradient updates have been applied.
-
-`--save_init` Save the initialization of the model.
-
-*CUDA*
-
-`--cuda` Use the GPU if available.
-
-`--multigpu` Use multiple GPUs if available.
-
-*Other*
-
-`--seed` Set the random seed.
-
-## Faster ELMo Usage
-
-If you specify the `elmo_cache_dir`, then the context-insensitive ELMo vectors will be cached, making it much faster to load these vectors after the initial usage. They must be cached once per dataset (a dataset is identified as a hash of its vocabulary).
+We provide randomly-initialized word embedding, skip-thoughts embedding and elmo embedding. If you use elmo embedding and specify the `--elmo_cache_dir`, then the context-insensitive ELMo vectors will be cached, making it much faster to load these vectors after the initial usage.
 
 Example Usage:
 
 ```
-python diora/scripts/train.py \
-    --emb elmo \
-    --elmo_cache_dir ~/data/elmo \
+word_emb=none/skip/elmo
+
+python cliora/scripts/train.py \
+    --emb $word_emb \
     ... # other args
 ```
 
-## Easy Argument Assignment
 
-Every experiment generates a `flags.json` file under its `experiment_path`. This file is useful when loading a checkpoint, as it specifies important properties for model configuration such as number-of-layers or model-size.
-
-Note: Only arguments that are related to the model configuration will be used in this scenario.
-
-Example Usage:
-
-```
-# First, train your model.
-python diora/scripts/train.py \
-    --experiment_path ~/log/experiment-01 \
-    ... # other args
-
-# Later, load the model checkpoint, and specify the flags file.
-python diora/scripts/parse.py \
-    --load_model_path ~/log/experiment-01/model_periodic.pt \
-    --model_flags ~/log/experiment-01/flags.json \
-    ... # other args
-```
-
-## Logging
-
-Various logs, checkpoints, and useful files are saved to a "log" directory when running DIORA. By default, this directory will be at `/path/to/diora/pytorch/log/${uuid}`. For example, this might be the log directory: `~/code/diora/pytorch/3d10566e`. You can specify your own directory using the `--experiment_path` flag.
-
-Some files stored in the log directory are:
-
-```
-- flags.json  # All the arguments the experiment was run with as a JSON file.
-- model_periodic.pt  # The latest model checkpoint, saved every N batches.
-- model.step_X.pt  # Another checkpoint is saved every X batches.
-```
 
 Please cite our paper as follows:
 
