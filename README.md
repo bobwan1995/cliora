@@ -17,9 +17,9 @@ Please cite our paper as follows:
 }
 ```
 
-## Quick Start
+## Envs and Datas
 
-Install dependencies (using Conda as a virtual environment).
+Install dependencies (using Conda as a virtual environment):
 
 ```
 conda create -n cliora python=3.8
@@ -28,11 +28,7 @@ pip install -r requirements.txt
 ```
 
 
-Download the [datasets]() and the [checkpoints](https://esatkuleuvenbe-my.sharepoint.com/:u:/g/personal/bwan_esat_kuleuven_be/EYCdZiPIcj5OtQQqIH49B4gBcfT607sKdnGxrsdkYPKapQ?e=1aGlyk).
-
-
-
-Make sure to put the files as the following structure:
+Download [flickr_data](https://esatkuleuvenbe-my.sharepoint.com/:u:/g/personal/bwan_esat_kuleuven_be/ERcLeIlPJxBDg7Jdf6IwOT0BU5kbcTHSRM7U_dPX_y4ftg?e=j9gyB9) and [outputs](https://esatkuleuvenbe-my.sharepoint.com/:u:/g/personal/bwan_esat_kuleuven_be/EYCdZiPIcj5OtQQqIH49B4gBcfT607sKdnGxrsdkYPKapQ?e=1aGlyk) and put the files as the following structure:
 
 ```
   cliora
@@ -46,7 +42,9 @@ Make sure to put the files as the following structure:
       ├─flickr
 ```
 
-Running CLIORA.
+Download [train_features_compress.hdf5](https://drive.google.com/file/d/1ABnF0SZMf6pOAC89LJXbXZLMW1X86O96/view?usp=sharing), [val features_compress.hdf5](https://drive.google.com/file/d/1iK-yz6PHwRuAciRW1vGkg9Bkj-aBE8yJ/view?usp=sharing), [test features_compress.hdf5](https://drive.google.com/file/d/1pjntkbr20l2MiUBVQLVV6rQNWpXQymFs/view?usp=sharing) to `flickr_data/lickr_feat_maf`.
+
+## Running CLIORA
 ```
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
