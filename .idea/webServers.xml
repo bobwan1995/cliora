@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b71940db-1025-4b13-a9e9-3bf6f58f4e44" name="AI">
+        <fileTransfer accessType="SFTP" host="10.15.89.41" port="22033" sshConfigId="cfee2318-5fab-4055-a902-cffbf4405a94" sshConfig="root@10.15.89.41:22033 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="de283c71-98e3-4193-ac22-6295e28b9d77" name="GCluster">
+        <fileTransfer accessType="SFTP" sshConfigId="3d827bf7-169e-4c65-8ae7-0db96a01fcac" sshConfig="root@10.15.89.43:21113 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
