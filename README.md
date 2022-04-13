@@ -1,34 +1,21 @@
-## DIORA
+## CLIORA
 
-This is the official repo for our NAACL 2019 paper Unsupervised Latent Tree Induction with Deep Inside-Outside Recursive Autoencoders (DIORA), which presents a fully-unsupervised method for discovering syntax. If you use this code for research, please cite our paper as follows:
+This is the official codebase for ICLR **oral** paper Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling. We introduce a new task of Unsupervised Vision-Language Grammar Induction and devise a model Contrastive Language-Image inside-Outside Recursive Autoencoder (CLIORA) to solve it. Please read our paper for more details: https://openreview.net/forum?id=N0n_QyQ5lBF.
 
-```
-@inproceedings{drozdov2019diora,
-  title={Unsupervised Latent Tree Induction with Deep Inside-Outside Recursive Autoencoders},
-  author={Drozdov, Andrew and Verga, Pat and Yadav, Mohit and Iyyer, Mohit and McCallum, Andrew},
-  booktitle={North American Association for Computational Linguistics},
-  year={2019},
-}
-```
-
-The paper is available on arXiv: https://arxiv.org/abs/1904.02142
-
-For questions/concerns/bugs please contact adrozdov at cs.umass.edu.
+This code follows the implementation architecture of [DIORA](https://github.com/iesl/diora)
 
 ## Quick Start
 
 Install dependencies (using Conda as a virtual environment).
 
 ```
-conda create -n diora python=3.7
-source activate diora
+conda create -n cliora python=3.8
+source activate cliora
 pip install -r requirements.txt
-
-## Deactivate Conda when not being used.
-source deactivate
 ```
 
-Download the pre-trained model.
+
+Download the dataset.
 
 ```
 mkdir -p ~/Downloads
@@ -37,11 +24,6 @@ wget http://diora-naacl-2019.s3.amazonaws.com/diora-checkpoints.zip
 unzip diora-checkpoints.zip
 ```
 
-(Optional) Download training data: To reproduce experiments from our NAACL submission, concatenate the data from [SNLI](https://nlp.stanford.edu/projects/snli/) and [MultiNLI](https://www.nyu.edu/projects/bowman/multinli/).
-
-```
-cat ~/data/snli_1.0/snli_1.0_train.jsonl ~/data/multinli_1.0/multinli_1.0_train.jsonl > ~/data/allnli.jsonl
-```
 
 Running DIORA.
 
@@ -229,6 +211,17 @@ Some files stored in the log directory are:
 - flags.json  # All the arguments the experiment was run with as a JSON file.
 - model_periodic.pt  # The latest model checkpoint, saved every N batches.
 - model.step_X.pt  # Another checkpoint is saved every X batches.
+```
+
+Please cite our paper as follows:
+
+```
+@inproceedings{wan2022cliora,
+  title={Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling},
+  author={Wan, Bo and Han, Wenjuan and Zheng, Zilong and Tuytelaars, Tinne},
+  booktitle={The International Conference on Learning Representations (ICLR)},
+  year={2022},
+}
 ```
 
 ## License
