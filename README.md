@@ -1,8 +1,21 @@
 ## CLIORA
 
-This is the official codebase for ICLR **oral** paper Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling. We introduce a new task of Unsupervised Vision-Language Grammar Induction and devise a model Contrastive Language-Image inside-Outside Recursive Autoencoder (CLIORA) to solve it. Please read our paper for more details: https://openreview.net/forum?id=N0n_QyQ5lBF.
+This is the official codebase for ICLR **oral** paper: Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling. 
+
+We introduce a new task of Unsupervised Vision-Language Grammar Induction and devise a model Contrastive Language-Image inside-Outside Recursive Autoencoder (CLIORA) to solve it. Please read our paper for more details: https://openreview.net/forum?id=N0n_QyQ5lBF.
 
 This code follows the implementation architecture of [DIORA](https://github.com/iesl/diora).
+
+Please cite our paper as follows:
+
+```
+@inproceedings{wan2022cliora,
+  title={Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling},
+  author={Wan, Bo and Han, Wenjuan and Zheng, Zilong and Tuytelaars, Tinne},
+  booktitle={The International Conference on Learning Representations (ICLR)},
+  year={2022},
+}
+```
 
 ## Quick Start
 
@@ -58,7 +71,7 @@ Using `DistributedDataParallel`:
 ```
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 export NGPUS=4
-python -m torch.distributed.launch --nproc_per_node=$NGPUS diora/scripts/train.py \
+python -m torch.distributed.launch --nproc_per_node=$NGPUS cliora/scripts/train.py \
     --cuda \
     --multigpu \
     ... # other args
@@ -67,7 +80,7 @@ python -m torch.distributed.launch --nproc_per_node=$NGPUS diora/scripts/train.p
 
 ## Word Embedding
 
-We provide randomly-initialized word embedding, skip-thoughts embedding and elmo embedding. If you use elmo embedding and specify the `--elmo_cache_dir`, then the context-insensitive ELMo vectors will be cached, making it much faster to load these vectors after the initial usage.
+We provide randomly-initialized word embedding, skip-thoughts embedding and ELMo embedding. If you use ELMo embedding and specify the `--elmo_cache_dir`, then the context-insensitive ELMo vectors will be cached, making it much faster to load these vectors after the initial usage.
 
 Example Usage:
 
@@ -79,18 +92,6 @@ python cliora/scripts/train.py \
     ... # other args
 ```
 
-
-
-Please cite our paper as follows:
-
-```
-@inproceedings{wan2022cliora,
-  title={Unsupervised Vision-Language Grammar Induction with Shared Structure Modeling},
-  author={Wan, Bo and Han, Wenjuan and Zheng, Zilong and Tuytelaars, Tinne},
-  booktitle={The International Conference on Learning Representations (ICLR)},
-  year={2022},
-}
-```
 
 ## License
 
