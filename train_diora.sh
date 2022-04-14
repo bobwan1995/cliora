@@ -4,7 +4,7 @@
 EXP_PATH="./outputs/flickr/flickr_diora_5e4_mlpshare_bs32_RandInit_seed1234"
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3
-python -m torch.distributed.launch --nproc_per_node=4 diora/scripts/train.py \
+python -m torch.distributed.launch --nproc_per_node=4 cliora/scripts/train.py \
     --cuda --multigpu \
     --max_epoch 30 \
     --seed 1234 \
