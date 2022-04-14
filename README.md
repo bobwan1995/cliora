@@ -63,18 +63,33 @@ sh test_cliora.sh
 ```
 
 ## Multi-GPU Training
+Single-GPU training:
+```
+export CUDA_VISIBLE_DEVICES=0
+python -m cliora/scripts/train.py
+    --cuda
+    ... # other args
+```
 
-Using `DistributedDataParallel`:
+Use `DistributedDataParallel` for Multi-GPU Training:
 
 ```
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 export NGPUS=4
-python -m torch.distributed.launch --nproc_per_node=$NGPUS cliora/scripts/train.py \
-    --cuda \
-    --multigpu \
+python -m torch.distributed.launch --nproc_per_node=$NGPUS cliora/scripts/train.py
+    --cuda
+    --multigpu
     ... # other args
 ```
 
+## Visualization
+Download [Flickr30K Entities Dataset](http://hockenmaier.cs.illinois.edu/DenotationGraph/) and put it under 'flickr_data/'. Add '--visualize' when run 'test_clora.sh':
+```
+python cliora/scripts/parse.py
+    --cuda
+    --visualize
+    --obj_feats
+```
 
 ## Word Embedding
 
@@ -85,8 +100,8 @@ Example Usage:
 ```
 word_emb=none/skip/elmo
 
-python cliora/scripts/train.py \
-    --emb $word_emb \
+python cliora/scripts/train.py
+    --emb word_emb
     ... # other args
 ```
 
